@@ -1,3 +1,7 @@
 # ChatRoom
 
 结合了Express和SocketIO写了一个简单的聊天室，实现了实时聊天、修改昵称、私信消息、消息撤回、上下线及在线人数提示、查看在线用户的功能
+
+开发时用了gulp、livereload、nodemon等插件工具，提供了监视文件的改动而重启服务端和刷新页面的功能
+
+服务端的启动命令是gulp，而Linux下启动需要加上sudo，因为nodemon模块监视文件的改动需要部分权限

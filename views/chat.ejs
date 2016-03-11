@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+	<head>
+		<link rel="stylesheet" href="/stylesheets/bootstrap.min.css" />
+		<!-- <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.2/css/bootstrap.min.css" /> -->
+		<link rel='stylesheet' href='/stylesheets/style.css' />
+		<title><%= title %></title>
+	</head>
+	<body>
+		<div class="msgArea">
+			<ul id="messages"></ul>
+		</div>
+		<form action="">
+			<input id="m" autocomplete="off" /><button class="btn btn-default" id="send">发送</button><button class="btn btn-primary" id="alter">修改昵称</button>
+		</form>
+		<script src="/socket.io/socket.io.js"></script>
+		<!-- <script src="http://code.jquery.com/jquery-1.11.1.js"></script> -->
+		<!-- <script src="http://cdn.bootcss.com/bootstrap/3.3.2/js/bootstrap.min.js"></script> -->
+		<script src="/javascripts/jquery.min.js"></script>
+		<script src="/javascripts/bootstrap.min.js"></script>
+		<script src="/javascripts/events.js"></script>
+	</body>
+</html>

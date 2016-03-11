@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+	<head>
+		<link rel="stylesheet" href="/stylesheets/bootstrap.min.css" />
+		<link rel='stylesheet' href='/stylesheets/style.css' />
+		<title><%= title %></title>
+	</head>
+	<body>
+		<h1>在线用户列表</h1>
+		<hr />
+		<ul id='list'></ul>
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="/javascripts/jquery.min.js"></script>
+		<script type="text/javascript">
+			var arr = "<%= arr %>".split(',');
+			for(var i=0; i<arr.length; i+=2){
+				$('#list').append('<li>昵称：'+arr[i+1]+'（ID：'+arr[i]+'）'+'</li>');
+			}
+		</script>
+	</body>
+</html>

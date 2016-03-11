@@ -1,0 +1,162 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('../app');
+var router = require('../routes/index.js');
+var debug = require('debug')('Express:server');
+var http = require('http');
+
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+
+var server = http.createServer(app);
+var io = require('socket.io')(server);	//在server上创建一个io对象而不是在http上
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+	var port = parseInt(val, 10);
+
+	if (isNaN(port)) {
+		// named pipe
+		return val;
+	}
+	if (port >= 0) {
+		// port number
+		return port;
+	}
+
+	return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+	if (error.syscall !== 'listen') {
+		throw error;
+	}
+
+	var bind = typeof port === 'string'
+	    ? 'Pipe ' + port
+	    : 'Port ' + port;
+
+	// handle specific listen errors with friendly messages
+	switch (error.code) {
+		case 'EACCES':
+			console.error(bind + ' requires elevated privileges');
+			process.exit(1);
+			break;
+		case 'EADDRINUSE':
+			console.error(bind + ' is already in use');
+			process.exit(1);
+			break;
+		default:
+			throw error;
+	}
+}
+
+
+var num = 0;
+var nick = [];
+var sendinfo = {};
+io.on('connection', function(socket){
+	//用socket.id会有多余的 “/#” 符号
+	nick[socket.client.conn.id] = socket.client.conn.id;
+	sendinfo = {
+		type: 'ONL',
+		userid: nick[socket.client.conn.id],
+		olnum: ++num
+	};
+	io.emit('action message', sendinfo);    //接收用户连接消息并广播
+
+	socket.on('chat message', function(info){       //接收用户聊天消息
+		sendinfo = {};
+		if(info.type == '@'){           //私信处理
+			var p = info.msg.indexOf(' ');
+			sendinfo.recvid = info.msg.substring(1, p);
+			info.msg = info.msg.substring(p+1);
+		}
+		sendinfo.time = info.time;
+		sendinfo.sendid = socket.client.conn.id;
+		sendinfo.sender = nick[socket.client.conn.id];
+		sendinfo.msg = info.msg;
+		io.emit('chat message', sendinfo);          //消息广播
+	});
+
+	socket.on('recall message', function(info){
+		sendinfo = {
+			sender: nick[socket.client.conn.id],
+			sendid: socket.client.conn.id,
+			msgid: info.msgid
+		}
+		io.emit('recall message', sendinfo);
+	})
+
+	socket.on('change name', function(nickname){        //接收用户修改昵称消息
+		sendinfo = {
+			type: 'CN',userid: socket.client.conn.id,oldname: nick[socket.client.conn.id],newname: nickname
+		};
+		io.emit('action message', sendinfo);
+		nick[socket.client.conn.id] = nickname;
+	});
+
+	socket.on('disconnect', function(){         //接收用户断开连接消息
+		sendinfo = {
+			type: 'OUTL',
+			user: nick[socket.client.conn.id],
+			olnum: --num
+		};
+		io.emit('action message', sendinfo);
+		delete nick[socket.client.conn.id];
+	});
+
+});
+
+//为了能获取到nick数组的信息，所以将/list路由放在此处
+router.get('/list', function(req, res, next){
+	var arr = [];
+	for(var i in nick){
+		arr.push(i+','+nick[i]);
+	}
+	res.render('list', {
+		title: "NodeJS聊天室",
+		arr: arr
+	});
+});
+
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+	var addr = server.address();
+	var bind = typeof addr === 'string'
+		? 'pipe ' + addr
+		: 'port ' + addr.port;
+	debug('Listening on ' + bind);
+}

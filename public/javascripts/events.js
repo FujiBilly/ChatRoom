@@ -42,7 +42,7 @@ $('button').click(function(){
 			info.msg = '@' + $('#m').text() + ' ' + msg;
 			socket.emit('chat message', info);
 			$('#messages').append($('<li class="li_at" id="'+time+'" onmouseover="mouseover(this)" onmouseout="mouseout(this)"><span>我</span> ：<span class="usermsg">'+elem+'</span>	<span onclick="recallmsg(this)" class="glyphicon glyphicon-minus" style="visibility: hidden"></span></li>'));
-			$('html, body').animate({scrollTop: $(document).height()}, 50);
+			$('ul').animate({scrollTop: $(document).height()}, 50);
 		}else{			//非私信消息
 			info.msg = m;
 			socket.emit('chat message', info);
@@ -66,7 +66,7 @@ socket.on('chat message', function(msg){	//接收聊天消息
 	}else{
 		$('#messages').append('<li id="'+msg.time+'"><span onclick="mouseclick(this)" class="username '+msg.sendid+'" id="'+msg.sendid+'">'+msg.sender+'</span> ：<span class="usermsg">'+msg.msg+'</span></li>');
 	}
-	$('html, body').animate({scrollTop: $(document).height()}, 50);
+	$('ul').animate({scrollTop: $(document).height()}, 50);
 });
 
 socket.on('recall message', function(msg){
@@ -100,5 +100,5 @@ socket.on('action message', function(info){	//接收行为消息
 	}else if(info.type == 'OUTL'){
 		$('#messages').append('<li class="li_action">'+info.user+' 已经下线～当前共有 '+info.olnum+' 人在线～');
 	}
-	$('html, body').animate({scrollTop: $(document).height()}, 50);
+	$('ul').animate({scrollTop: $(document).height()}, 50);
 });

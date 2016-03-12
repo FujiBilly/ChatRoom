@@ -62,7 +62,7 @@ h1 {
 #messages {
 	height: 100%;
 	margin: 0;
-	overflow-y: scroll;
+	overflow-y: scroll;	/*很关键*/
 	padding: 10px 20px 10px 20px;
 	list-style-type: none; 
 }

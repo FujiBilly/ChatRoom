@@ -18,21 +18,17 @@ html, input {
 	sans-serif;
 }
 
-html, body {
-	height: 100%;
-	margin: 0;
-	padding: 0;
-}
-
 h1 {
 	text-align: center;
 }
 
 /*首页*/
 .home-btn {
+	width: 20%;
+	height: 12%;
 	position: relative;
 	margin-top: 10%;
-	margin-left: 45.5%;
+	margin-left: 40%;
 }
 
 /*在线用户页面*/

@@ -3,13 +3,6 @@
 	<head>
 		<link rel="stylesheet" href="/stylesheets/bootstrap.min.css" />
 		<link rel='stylesheet' href='/stylesheets/style.css' />
-		<style type="text/css">
-			body {
-				height: 98%;
-				margin: 0;
-				padding: 0;
-			}
-		</style>
 		<title><%= title %></title>
 	</head>
 	<body>
@@ -19,9 +12,11 @@
 		<script src="/socket.io/socket.io.js"></script>
 		<script src="/javascripts/jquery.min.js"></script>
 		<script type="text/javascript">
-			var arr = "<%= arr %>".split(',');
-			for(var i=0; i<arr.length; i+=2){
-				$('#list').append('<li>昵称：'+arr[i+1]+'（ID：'+arr[i]+'）'+'</li>');
+			if("<%= arr %>"){
+				var arr = "<%= arr %>".split(',');
+				for(var i=0; i<arr.length; i+=2){
+					$('#list').append('<li>昵称：'+arr[i+1]+'（ID：'+arr[i]+'）'+'</li>');
+				}
 			}
 		</script>
 	</body>

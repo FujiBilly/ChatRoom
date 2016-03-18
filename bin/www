@@ -5,7 +5,6 @@
  */
 
 var app = require('../app');
-var router = require('../routes/index.js');
 var debug = require('debug')('Express:server');
 var http = require('http');
 
@@ -140,18 +139,6 @@ io.on('connection', function(socket){
 
 });
 
-//为了能获取到nick数组的信息，所以将/list路由放在此处
-router.get('/list', function(req, res, next){
-	var arr = [];
-	for(var i in nick){
-		arr.push(i+','+nick[i]);
-	}
-	res.render('list', {
-		title: "NodeJS聊天室",
-		arr: arr
-	});
-});
-
 
 /**
  * Event listener for HTTP server "listening" event.
@@ -164,3 +151,5 @@ function onListening() {
 		: 'port ' + addr.port;
 	debug('Listening on ' + bind);
 }
+
+module.exports = nick;

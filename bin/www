@@ -82,9 +82,11 @@ function onError(error) {
 
 var num = 0;
 var nick = [];
+var socketarr = [];
 var sendinfo = {};
 io.on('connection', function(socket){
 	//用socket.id会有多余的 “/#” 符号
+	socketarr[socket.client.conn.id] = socket;
 	nick[socket.client.conn.id] = socket.client.conn.id;
 	sendinfo = {
 		type: 'ONL',
@@ -95,16 +97,18 @@ io.on('connection', function(socket){
 
 	socket.on('chat message', function(info){       //接收用户聊天消息
 		sendinfo = {};
-		if(info.type == '@'){           //私信处理
-			var p = info.msg.indexOf(' ');
-			sendinfo.recvid = info.msg.substring(1, p);
-			info.msg = info.msg.substring(p+1);
-		}
+		var p = info.msg.indexOf(' ');
+		var recvid = info.msg.substring(1, p);
+		info.msg = info.msg.substring(p+1);
 		sendinfo.time = info.time;
 		sendinfo.sendid = socket.client.conn.id;
 		sendinfo.sender = nick[socket.client.conn.id];
 		sendinfo.msg = info.msg;
-		io.emit('chat message', sendinfo);          //消息广播
+		if(info.type == '@'){           //私信处理
+			socketarr[recvid].send(sendinfo);
+		}else{
+			io.emit('chat message', sendinfo);          //消息广播
+		}
 	});
 
 	socket.on('recall message', function(info){

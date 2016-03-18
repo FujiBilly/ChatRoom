@@ -57,11 +57,7 @@ $('button').click(function(){
 });
 
 socket.on('chat message', function(msg){	//接收聊天消息
-	if(msg.recvid){				//判断是不是私信消息
-		if(socket.id == msg.recvid){	//判断自己是不是被@的用户
-			$('#messages').append($('<li class="li_private" id="'+msg.time+'"><span  onclick="mouseclick(this)" class="username '+msg.sender+'"  id="'+msg.sendid+'">'+msg.sender+'</span> （私信）：<span class="usermsg">'+msg.msg+'</span></li>'));
-		}
-	}else if(msg.sendid == socket.id){
+	if(msg.sendid == socket.id){
 		$('#messages').append($('<li id="'+msg.time+'" onmouseover="mouseover(this)" onmouseout="mouseout(this)"><span>我</span> ：<span class="usermsg">'+msg.msg+'</span>	<span onclick="recallmsg(this)" class="glyphicon glyphicon-minus" style="visibility: hidden"></span></li>'));
 	}else{
 		$('#messages').append('<li id="'+msg.time+'"><span onclick="mouseclick(this)" class="username '+msg.sendid+'" id="'+msg.sendid+'">'+msg.sender+'</span> ：<span class="usermsg">'+msg.msg+'</span></li>');
@@ -102,3 +98,7 @@ socket.on('action message', function(info){	//接收行为消息
 	}
 	$('ul').animate({scrollTop: $('ul')[0].scrollHeight}, 50);
 });
+
+socket.on('message', function(data){
+	$('#messages').append($('<li class="li_private" id="'+data.time+'"><span  onclick="mouseclick(this)" class="username '+data.sender+'"  id="'+data.sendid+'">'+data.sender+'</span> （私信）：<span class="usermsg">'+data.msg+'</span></li>'));
+})
